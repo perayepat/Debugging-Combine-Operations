@@ -31,7 +31,7 @@ let request = URLSession.shared.dataTaskPublisher(for: url)
 
 let subscription = request
     .handleEvents(
-        receiveSubscription: {_ in print("subscription recieved")},
+        receiveSubscription: {_ in print("subscription recieved")}, 
         receiveOutput: {_  in print("recieved Output")},
         receiveCompletion: {_ in print("Recieved Completion")},
         receiveCancel: { print("Recieved Cancel")},
@@ -40,5 +40,29 @@ let subscription = request
     .sink(receiveCompletion: {print($0)}, receiveValue: {data, response in
         print(data)
     })
+
+```
+## Using the debugger 
+combine gives you multiple ways to break on the error
+the `breakpoint` will trigger the debugger on the set condition
+
+``` swift
+    private var cancellable: AnyCancellable?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let publisher = (1...10).publisher
+        
+        self.cancellable = publisher
+//            .breakpointOnError()  /// this will break on the error found 
+            .breakpoint(receiveOutput: { value in
+                return value > 9
+            })
+            .sink {
+            print($0)
+        }
+        
+    }
 
 ```
